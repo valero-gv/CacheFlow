@@ -11,11 +11,13 @@ import (
 	"CacheFlow/internal/store"
 )
 
+// Server represents our cache server
 type Server struct {
 	store *store.Store
 	addr  string
 }
 
+// New creates a new Server instance
 func New(addr string) (*Server, error) {
 	log.Println("Initializing server...")
 
@@ -37,6 +39,7 @@ func New(addr string) (*Server, error) {
 	return server, nil
 }
 
+// Start starts the server and listens for incoming connections
 func (s *Server) Start() error {
 	log.Println("Starting server listener...")
 	listener, err := net.Listen("tcp", s.addr)
@@ -56,6 +59,7 @@ func (s *Server) Start() error {
 
 	log.Printf("Server listening on %s", s.addr)
 
+	// Start a goroutine to periodically clean up expired items
 	go func() {
 		log.Println("Background cleanup routine started.")
 		for {
@@ -73,10 +77,12 @@ func (s *Server) Start() error {
 		}
 		log.Printf("Accepted connection from %s", conn.RemoteAddr())
 
+		// Handle each connection in a separate goroutine
 		go s.handleConnection(conn)
 	}
 }
 
+// handleConnection processes a single client connection
 func (s *Server) handleConnection(conn net.Conn) {
 	defer func() {
 		log.Printf("Closing connection from %s", conn.RemoteAddr())
@@ -87,16 +93,16 @@ func (s *Server) handleConnection(conn net.Conn) {
 	writer := bufio.NewWriter(conn)
 
 	for {
+		// Read command from client
 		cmd, err := reader.ReadString('\n')
 		if err != nil {
 			log.Printf("Error reading command from %s: %v", conn.RemoteAddr(), err)
 			return
 		}
 
+		// Process command and send response
 		response := s.handleCommand(strings.TrimSpace(cmd))
-
-		_, err = writer.WriteString(response + "\n")
-		if err != nil {
+		if _, err := writer.WriteString(response + "\n"); err != nil {
 			log.Printf("Error writing response to %s: %v", conn.RemoteAddr(), err)
 			return
 		}
@@ -104,6 +110,7 @@ func (s *Server) handleConnection(conn net.Conn) {
 	}
 }
 
+// handleCommand processes a single command and returns the response
 func (s *Server) handleCommand(cmd string) string {
 	parts := strings.Fields(cmd)
 	if len(parts) == 0 {
@@ -116,10 +123,18 @@ func (s *Server) handleCommand(cmd string) string {
 			return "ERROR: SET requires key and value"
 		}
 		key := parts[1]
-		value := parts[2]
+		var value string
 		var ttl time.Duration
 		if len(parts) > 3 {
-			ttl, _ = time.ParseDuration(parts[3])
+			parsedTTL, err := time.ParseDuration(parts[len(parts)-1])
+			if err == nil {
+				ttl = parsedTTL
+				value = strings.Join(parts[2:len(parts)-1], " ")
+			} else {
+				value = strings.Join(parts[2:], " ")
+			}
+		} else {
+			value = strings.Join(parts[2:], " ")
 		}
 		s.store.Set(key, value, ttl)
 		return "OK"

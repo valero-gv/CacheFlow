@@ -1,64 +1,64 @@
 # CacheFlow
 
-CacheFlow - это легковесная система кэширования, написанная на Go. Проект начинается с простой версии, которая будет постепенно расширяться для поддержки распределенного кэширования.
+CacheFlow is a lightweight caching system written in Go. The project starts with a simple version that will gradually expand to support distributed caching.
 
-## Текущая версия (v0.1.0)
+## Current Version (v0.1.0)
 
-### Основные возможности:
-- In-memory хранилище key-value
-- TCP сервер для обработки запросов
-- Базовые операции:
-  - SET - сохранение значения
-  - GET - получение значения
-  - DELETE - удаление значения
-  - EXISTS - проверка существования ключа
-- Простой CLI клиент
-- Поддержка TTL (Time To Live) для записей
-- AOF (Append-Only File) для персистентности данных
+### Key Features:
+- In-memory key-value storage
+- TCP server for request handling
+- Basic operations:
+  - SET - save value
+  - GET - retrieve value
+  - DELETE - remove value
+  - EXISTS - check key existence
+- Simple CLI client
+- TTL (Time To Live) support for entries
+- AOF (Append-Only File) for data persistence
 
-### Технический стек:
+### Tech Stack:
 - Go 1.21+
-- TCP протокол
-- In-memory хранилище
-- CLI интерфейс
-- AOF для персистентности
+- TCP protocol
+- In-memory storage
+- CLI interface
+- AOF for persistence
 
-### Установка и запуск:
+### Installation and Running:
 ```bash
-# Установка зависимостей
+# Install dependencies
 go mod init cacheflow
 go mod tidy
 
-# Запуск сервера
+# Run server
 go run cmd/server/main.go
 
-# Запуск клиента
+# Run client
 go run cmd/client/main.go
 ```
 
-## План развития проекта
+## Project Development Plan
 
-### Версия 0.2.0
-- [ ] Улучшение персистентности данных
-- [ ] Реализация простой репликации
-- [ ] Добавление метрик и мониторинга
-- [ ] Улучшение CLI интерфейса
+### Version 0.2.0
+- [ ] Enhanced data persistence
+- [ ] Simple replication implementation
+- [ ] Metrics and monitoring
+- [ ] Improved CLI interface
 
-### Версия 0.3.0
-- [ ] Реализация шардинга
-- [ ] Добавление консенсуса между узлами
-- [ ] Улучшенная система репликации
-- [ ] Добавление транзакций
+### Version 0.3.0
+- [ ] Sharding implementation
+- [ ] Node consensus
+- [ ] Enhanced replication system
+- [ ] Transaction support
 
-### Версия 0.4.0
-- [ ] Реализация распределенного консенсуса (Raft)
-- [ ] Автоматическое восстановление после сбоев
-- [ ] Улучшенная система мониторинга
-- [ ] API для внешних приложений
+### Version 0.4.0
+- [ ] Distributed consensus (Raft)
+- [ ] Automatic failure recovery
+- [ ] Enhanced monitoring system
+- [ ] API for external applications
 
-## Архитектура
+## Architecture
 
-### Текущая архитектура:
+### Current Architecture:
 ```
 +----------------+     +-----------------+     +------------------+
 |                |     |                 |     |                  |
@@ -67,7 +67,7 @@ go run cmd/client/main.go
 +----------------+     +-----------------+     +------------------+
 ```
 
-### Будущая архитектура:
+### Future Architecture:
 ```
 +----------------+     +-----------------+     +------------------+
 |                |     |                 |     |                  |
@@ -83,9 +83,9 @@ go run cmd/client/main.go
                         +------------------+     +------------------+
 ```
 
-## Протокол коммуникации
+## Communication Protocol
 
-### Текущий протокол:
+### Current Protocol:
 ```
 SET key value [ttl]
 GET key
@@ -93,11 +93,11 @@ DELETE key
 EXISTS key
 ```
 
-### Будущие улучшения:
-- Добавление версионирования
-- Поддержка сложных структур данных
-- Аутентификация и авторизация
-- Шифрование данных
+### Future Improvements:
+- Versioning support
+- Complex data structures
+- Authentication and authorization
+- Data encryption
 
-## Лицензия
+## License
 MIT 
